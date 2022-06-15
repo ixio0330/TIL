@@ -50,7 +50,7 @@ Component는 react에서 가장 중요한 개념이다. 웹 UI에서는 페이�
 - render 함수에 jsx 문법으로 html 태그 작성
 - props는 단방향. 부모 → 자식 방향으로만 전달 가능
 
-React는 component를 생성하는 방식이 두 가지이다. class와 hook 방식인데, hook이 최근 문법이다.
+React는 component를 생성하는 방식이 두 가지이다. class와 함수 방식인데, 함수 컴포넌트가 최근 문법이다.
 
 ### Class Component
 ```
@@ -74,33 +74,24 @@ class ComponentClass extends React.Component {
 };
 ```
 
-### Hook
+### Function Component
 ```
-class ComponentClass extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: 'temp'
-    };
-  }
-
-  setName(name) {
-    this.state.name = name;
-  }
-
-  render() {
-    return (
-      <div></div>
-    )
-  }
-};
+function FunctionComponent() {
+  const [state, setState] = useState('temp');
+  const onChangeState = (e) => setState(e.target.value);
+  
+  return(
+    <div>
+    </div>
+  )
+}
 ```
 
 ## State
 
 State는 component가 가지는 상태 값을 의미한다. state는 UI에서 보여줘야 하는 데이터를 담거나, 서버에 보내야하는 데이터를 담을 때 주로 사용한다.
 
-**Hook에서 state사용하기**
+**Function component state사용하기**
 
 useState를 사용해 구조 분해 할당으로 state와 setState를 받는다.
 
@@ -229,7 +220,7 @@ class ComponentClass extends React.Component {
 }
 ```
 
-### Hook
+### Function
 
 ```
 function ComponentHook () {
