@@ -223,7 +223,7 @@ class ComponentClass extends React.Component {
 ### Function
 
 ```
-function ComponentHook () {
+function FunctionComponent () {
 
   // componentDidMount
   useEffect(()=> {
