@@ -55,7 +55,7 @@ promise
   .catch(console.log);
 
 // 여기서 받은 resolve함수가 console.log이기 때문에
-function executor(resolve, reject) {
+function executor(console.log, reject) {
   console.log('일단 실행된다.');
   // 이렇게 실행된다.
   console.log('Success!');
