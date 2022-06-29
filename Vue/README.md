@@ -79,3 +79,33 @@ vue ui
 ```
 
 원하는 옵션을 선택해서 프로젝트를 생성하면 된다.
+
+## Vue 컴포넌트 기본구조
+
+Vue는 파일은 .vue 확장자를 사용한다. 기본 구조는 html 코드가 들어가는 template, javascript 코드가 들어가는 script, css 코드가 들어가는 style로 나뉜다.
+
+```
+<template>
+  <div></div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  components: {},
+  data() {
+    return {
+    
+    }
+  },
+  methods: {},
+}
+</script>
+
+<style>
+</style>
+```
+
+컴포넌트는 script 태그 안에서 작성하는데, export default로 객체를 내보낸다.
+
+객체 안에는 컴포넌트 이름을 설정하는 name, import 해와서 사용할 컴포넌트들을 담는 components객체, 데이터를 담아둘 data함수, 컴포넌트 내부에서 사용할 함수를 담는 methods 등 컴포넌트에서 사용할 다양한 것들을 설정할 수 있다.
