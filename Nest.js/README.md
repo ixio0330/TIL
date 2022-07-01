@@ -24,16 +24,9 @@ api 엔드포인트를 관리하는 파일.
 
 api 비즈니스 로직을 관리하는 파일.
 
-## 구조 도식화
+## 구조 도식화 
 
-┌─ main.ts ───────────────────────────────────────────────────────────────────────────┐
-│┌─ appModule.ts ────────────────────────────────────────────────────────────────────┐│
-││┌──── weatherModule.ts ────┐ ┌──── noticeModule.ts ────┐ ┌──── quoteModule.ts ────┐││
-│││   weatherController.ts   │ │   noticeController.ts   │ │   quoteController.ts   │││
-│││    weatherService.ts     │ │     noticeService.ts    │ │     quoteService.ts    │││
-││└──────────────────────────┘ └─────────────────────────┘ └────────────────────────┘││
-│└───────────────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────────────┘
+![ex_screenshot](./assets/structure.png)
 
 ### WeatherController
 
@@ -121,3 +114,6 @@ export class WeatherModule {}
 ```
 
 각 모듈은 알아서 controller, service를 주입해주고, app.module.ts 파일에 imports에만 사용할 각 모듈을 넣어주면 되는 것 같다.
+
+#### 참고자료
+[NestJS로 배우는 백엔드 프로그래밍](https://wikidocs.net/book/7059)
