@@ -26,7 +26,7 @@ api 비즈니스 로직을 관리하는 파일.
 
 ## 구조 도식화 
 
-![ex_screenshot](./assets/structure.png)
+![ex_screenshot](./assets/structure.JPG)
 
 ### WeatherController
 
