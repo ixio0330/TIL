@@ -1069,3 +1069,121 @@ export class CreateUserTable1659063456789 implements MigrationInterface {
 ```
 
 파일이 루트 경로로 생성되어서 생성 경로를 다시 수정해도 계속 루트경로에 생성되서,, 일단 넘어가기로 했다. 그리고 마이그레이션도 당장 중요한 작업은 아니여서 일단 스킵! -->
+
+## 미들웨어(Middleware)
+
+Nest의 미들웨어는 Express의 미들웨어와 같다. 
+
+Express 공식 문서에 따르면 미들웨어가 수행하는 동작은 다음과 같다고 한다.
+
+- 어떤 형태의 코드라도 수행할 수 있음
+- 요청과 응답에 변형을 가할 수 있음
+- 요청-응답 주기를 끝낼 수 있음
+- 여러 개의 미들웨어를 사용한다면 next()로 호출 스택상 다음 미들웨어에게 제어권을 전달
+
+요청-응답 주기를 끝낸다는 것은 응답을 보내거나 에러처리를 해야 한다는 뜻이다. 
+
+만약 미들웨어가 응답 주기를 끝내지 않는다면 반드시 next()를 호출해야 하는데, 그렇지 않으면 어플리케이션은 더이상 아무것도 할 수 없는 상태(각주 hanging)가 된다고 한다. 
+
+미들웨어를 활영해서 다음과 같은 작업들을 수행할 수 있다.
+
+- 쿠키 파싱: 쿠키를 파싱하여 사용하기 쉬운 데이터 구조로 변경
+- 세션 관리: 세션 쿠키를 찾고, 해당 쿠키에 대한 세션의 상태를 조회해서 요청에 세션 정보를 추가
+- 인증/인가: 사용자가 서비스에 접근 가능한 권한이 있는지 확인. (Nest는 인가를 구현할 때 가드(Guard)를 이용하도록 권장함)
+- 본문(body) 파싱: 본문은 POST/PUT 요청으로 들어오는 json 타입뿐 아니라 파일 스트림과 같은 데이터도 있음. 이 데이터를 유형에 따라 읽고 해석한 다음 파라미터에 넣는 작업. 
+
+### Logger 미들웨어
+
+요청에 포함된 정보를 로깅하기 위한 Logger를 미들웨어로 구현해보자. src 폴더에 middleware 폴더를 생성하고 logger.middleware.ts 파일을 생성한다.
+
+logger.middleware.ts
+```
+import { Injectable, NestMiddleware } from '@nestjs/common';
+
+@Injectable()
+export class LoggerMiddleWare implements NestMiddleware {
+  use(req: any, res: any, next: (error?: any) => void) {
+    console.log('Request...');
+    next();
+  }
+}
+```
+
+미들웨어를 모듈에 포함시키기 위해서는 해당 모듈은 NestModule 인터페이스를 구현해야 하는데, AppModule에 구현해보자.
+
+app.module.ts
+```
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(LoggerMiddleWare).forRoutes('/users');
+  }
+}
+```
+
+/users경로로 api 호출을 해보면 콘솔에 Request...가 출력되는걸 확인해볼 수 있다.
+
+### MiddlewareConsumer
+
+만약 두 개 이상의 미들웨어를 사용하고 싶다면, apply함수에 원하는 미들웨어를 넣어서 사용하면 된다.
+
+똑같이 요청이 들어오면 콘솔에 Request를 출력하는 미들웨어를 만들어서 사용해보자.
+
+```
+configure(consumer: MiddlewareConsumer): any {
+  consumer.apply(LoggerMiddleWare, Logger2MiddleWare).forRoutes('/users');
+}
+```
+
+api 호출을 해보면 잘 작동이 된다.
+
+/users가 아니라 UsersController의 모든 라우팅 경로에 대해 미들웨어를 사용하고 싶다면 forRoutes에 컨트롤러를 넣어주면 된다.
+
+첫번째 미들웨어에서 응답 처리를 하면 두번째 미들웨어는 동작하지 않는다.
+
+logger.middleware.ts
+```
+use(req: any, res: any, next: (error?: any) => void) {
+  console.log('Request...');
+  res.send('DONE!');
+}
+```
+
+exclude 함수를 사용해서 미들웨어를 적용하지 않을 라우팅 경로를 설정할 수도 있다.
+
+app.module.ts
+```
+configure(consumer: MiddlewareConsumer): any {
+  consumer
+    .apply(LoggerMiddleWare, Logger2MiddleWare)
+    .exclude({ path: '/users/:id', method: RequestMethod.GET })
+    .forRoutes(UsersController);
+}
+```
+
+이렇게 하면 http://localhost:3000/users/test api 호출을 해도 미들웨어가 동작하지 않는다.
+
+### 전역으로 사용
+
+미들웨어는 전역으로 사용할 수 있다. main.ts에서 app.use() 에 사용할 미들웨어를 넣어주면 되는데, use 메소드는 클래스를 인자로 받을 수 없다. 따라서 전역으로 사용하려면 미들웨어를 함수로 만들어야 한다.
+
+logger2를 함수로 변경해보자.
+
+logger2.middleware.ts
+```
+import { NextFunction } from 'express';
+
+export function Logger2MiddleWare(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  console.log(`Request2...`);
+  next();
+}
+```
+
+main.ts에서 app.use(Logger2MiddleWare)를 넣어주고, api 호출을 해보자.
+
+Request2...가 먼저 찍히고, Request...가 찍히는걸 볼 수 있다.
+
+**함수로 만든 미들웨어는 DI 컨테이너를 사용할 수 없기 때문에, 프로바이더를 주입받아 사용할 수 없다는 단점이 있다.**
