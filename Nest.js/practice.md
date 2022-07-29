@@ -1187,3 +1187,263 @@ main.ts에서 app.use(Logger2MiddleWare)를 넣어주고, api 호출을 해보�
 Request2...가 먼저 찍히고, Request...가 찍히는걸 볼 수 있다.
 
 **함수로 만든 미들웨어는 DI 컨테이너를 사용할 수 없기 때문에, 프로바이더를 주입받아 사용할 수 없다는 단점이 있다.**
+
+## 가드(Guard)
+
+인가는 가드를 사용해서 구현한다. 가드를 만들어보자.
+
+auth.guard.ts
+```
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const request = context.switchToHttp().getRequest();
+    return this.validateRequest(request);
+  }
+
+  private validateRequest(request: any) {
+    return true;
+  }
+}
+```
+
+그리고 가드를 사용할 컨트롤러에서 UseGuards 데코레이터를 이용해 사용하면 된다.
+
+app.controller.ts
+```
+@UseGuards(AuthGuard)
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @UseGuards(AuthGuard)
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();
+  }
+}
+```
+
+# 오류 발생!
+
+오류가 발생해서 찾아보니, 가드를 넣어줄 때 함수를 실행시키는 형태로 넣어줘야 한다고 한다.
+
+```
+ERROR [ExceptionHandler] metatype is not a constructor TypeError: metatype is not a constructor
+```
+
+#### 해결 방법
+
+이렇게 넣어주면 오류가 발생하지 않는다.
+
+app.controller.ts
+```
+@UseGuards(AuthGuard())
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @UseGuards(AuthGuard())
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();
+  }
+}
+```
+
+이제 가드를 이용해서 인증, 인가를 구현해보자.
+
+그에 앞서서 토큰을 발행해주는 라이브러리를 설치해야 한다.
+
+```
+$ npm i jsonwebtoken
+$ npm i --save-dev @types/jsonwebtoken
+```
+
+그리고 AuthService를 생성해서, login 처리를 할 수 있는 함수와 토큰이 유효한지 체크하는 verify함수도 구현한다.
+
+auth.service.ts
+```
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import * as jwt from 'jsonwebtoken';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+@Injectable()
+export class AuthService {
+  login(user: User) {
+    const payload = { ...user };
+    return jwt.sign(payload, 'SECRET_KEY', {
+      expiresIn: '1d',
+      audience: payload.email,
+      issuer: 'issuer@email.com',
+    });
+  }
+
+  verify(jwtString: string) {
+    try {
+      const payload = jwt.verify(jwtString, 'SECRET_KEY') as (
+        | jwt.JwtPayload
+        | string
+      ) &
+        User;
+
+      const { id, email } = payload;
+
+      return {
+        userId: id,
+        email,
+      };
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
+}
+```
+
+이제 AuthGuard를 만들어보자.
+
+auth.guard.ts
+```
+import { Request } from 'express';
+import { Observable } from 'rxjs';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { AuthService } from './auth.service';
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  constructor(private authService: AuthService) {}
+
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const request = context.switchToHttp().getRequest();
+    return this.validateRequest(request);
+  }
+
+  private validateRequest(request: Request) {
+    const jwtString = request.headers.authorization?.split('Bearer ')[1];
+    this.authService.verify(jwtString);
+    return true;
+  }
+}
+```
+
+authorization가 undefined일수도 있기 때문에 ? 연산자로 authorization가 있을 경우에만 split 함수를 실행시키도록 했다.
+
+이제 UsersService에서 사용하면 된다.
+
+users.service.ts
+```
+@UseGuards(AuthGuard)
+@Get('/:id')
+async getUserInfo(@Param('id') userId: string): Promise<UserInfo> {
+  return await this.usersService.getUserInfo(userId);
+}
+```
+
+headers에 토큰을 넣지 않고 요청을 보내보면 Unauthorized를 반환한다.
+
+근데 보통 AuthModule을 사용해서 jwtService랑 같이 조합해서 쓰던데, 예제에서는 왜 따로 jsonwebtoken 라이브러리를 사용해서 Guard를 직접 구현하는지 모르겠다.
+
+## 로깅
+
+### 내장 로거
+
+Nest는 Logger를 제공한다. main.ts에서 간단하게 사용해보자.
+
+main.ts
+```
+import { Logger } from '@nestjs/common';
+const logger = new Logger();
+
+logger.log('Logger');
+logger.warn('Logger');
+logger.error('Logger');
+logger.verbose('Logger');
+logger.debug('Logger');
+```
+
+로깅은 비활성화 할수도 있고, 로그 레벨을 지정해줄 수도 있다. 프로덕션 모드에서는 민감한 정보가 노출될수도 있기 때문에 verbose, debug 로그를 출력하지 않아야 한다.
+
+main.ts
+```
+const app = await NestFactory.create(AppModule, {
+  logger:
+    process.env.NODE_ENV === 'production'
+      ? ['error', 'warn', 'log']
+      : ['error', 'warn', 'log', 'verbose', 'debug'],
+});
+```
+
+하지만 내장 로거는 파일이나 데이터 베이스로 저장하는 기능을 제공하지 않는다. 따라서 커스텀 로거를 만들어서 사용해야 한다.
+
+로거는 LoggerService 인터페이스를 상속받아서 구현하는데, 그러면 처음부터 다 구현해야하기 때문에 ConsoleLogger를 상속받는걸 추천해준다.
+
+logger.ts
+```
+import { ConsoleLogger } from '@nestjs/common';
+
+export class Logger extends ConsoleLogger {
+  error(message: any, stack?: string, context?: string) {
+    super.error.apply(this, arguments);
+    this.saveDatabase();
+  }
+
+  private saveDatabase() {
+    // DB 저장 로직
+  }
+}
+```
+
+그리고 모듈로 만들어서 extends 하고 AppModule에서 imports 해와서 쓰면 된다. (이쯤되면 흐름을 익혔기 때문에 자세한 설명은 생략,,)
+
+로거는 전역으로도 사용 가능하다.
+
+main.ts
+```
+app.useLogger(app.get(Logger));
+```
+
+하지만 내가 직접 로거를 만드는 것보단 잘 되어있는 라이브러리를 사용하는게 낫다. ㅎ
+
+예제에서도 winston을 추천해서 winston 로거를 적용해보려고 한다. winston-daily-rotate-file는 로그 파일을 저장하는데 도움을 주는 라이브러리이다.
+
+```
+$ npm i nest-winston winston winston-daily-rotate-file
+```
+
+이제 winston을 AppModule에 주입해보자.
+
+app.module.ts
+```
+WinstonModule.forRoot({
+  transports: [
+    new winston.transports.Console({
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        utilities.format.nestLike('MyApp', {
+          prettyPrint: true,
+        }),
+      ),
+    }),
+    new winstonDaily(dailyOptions('info')),
+    new winstonDaily(dailyOptions('warn')),
+    new winstonDaily(dailyOptions('error')),
+  ],
+}),
+```
+
+logs 폴더가 생기고, 각 error, info, wran 폴더도 생긴 것을 확인할 수 있다.
+
+로그를 어떻게 저장할지 포맷은 생각해봐야 할 것 같다.
