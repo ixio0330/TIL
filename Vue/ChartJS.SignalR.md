@@ -815,3 +815,158 @@ export default Vue.extend({
 });
 </script>
 ```
+
+### 실시간 차트에 여러 데이터 그리기
+
+여러 데이터를 그리기 위해서는 datasets 배열에 원하는 데이터 정보를 추가해주고, dataset에서 그에 맞는 데이터를 넣어주면 된다.
+
+방법을 찾아보다가 xAxisID를 사용하는 방식 있었는데, 이거는 x축에 date가 데이터 개수만큼 생겨서 좋은 방법이 아니라고 생각했다.
+
+```
+<template>
+  <LineChartGenerator
+    :chart-options="chartOptions()"
+    :chart-data="chartData"
+    :chart-id="chartId"
+    :dataset-id-key="datasetIdKey"
+    :plugins="plugins"
+    :css-classes="cssClasses"
+    :styles="styles"
+    :width="width"
+    :height="height"
+  />
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import { Line as LineChartGenerator } from "vue-chartjs/legacy";
+
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  ChartOptions,
+} from "chart.js";
+
+import ChartStreaming from "chartjs-plugin-streaming";
+
+import "chartjs-adapter-moment";
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  ChartStreaming
+);
+
+export default Vue.extend({
+  components: {
+    LineChartGenerator,
+  },
+  name: "LineChart",
+  props: {
+    chartId: {
+      type: String,
+      default: "line-chart",
+    },
+    datasetIdKey: {
+      type: String,
+      default: "label",
+    },
+    width: {
+      type: Number,
+      default: 400,
+    },
+    height: {
+      type: Number,
+      default: 400,
+    },
+    cssClasses: {
+      default: "",
+      type: String,
+    },
+    styles: {
+      type: Object,
+      default: () => ({}),
+    },
+    plugins: {
+      type: Array,
+      default: () => [],
+    },
+    chartValue: {
+      type: Number,
+      default: 0,
+    },
+  },
+  data() {
+    return {
+      chartData: {
+        datasets: [
+          {
+            label: "SiganlR real-time data1",
+            backgroundColor: "#ddd",
+            borderColor: "#ddd",
+            lineTension: 0.3,
+          },
+          {
+            label: "SiganlR real-time data2",
+            backgroundColor: "#888",
+            borderColor: "#888",
+            lineTension: 0.3,
+          },
+        ],
+      },
+    };
+  },
+  methods: {
+    getTime() {
+      return new Date().toTimeString().slice(0, 8);
+    },
+    chartOptions() {
+      const chartValue = this.$props.chartValue;
+      const tempChartValue = [chartValue, Math.floor(Math.random() * 50) + 1];
+      return {
+        plugins: {
+          streaming: {
+            duration: 30000,
+          },
+        },
+        scales: {
+          x: {
+            type: "realtime",
+            realtime: {
+              refresh: 50,
+              onRefresh(chart) {
+                chart.data.datasets.forEach((dataset, index) => {
+                  dataset.data.push({
+                    x: Date.now(),
+                    y: tempChartValue[index],
+                  });
+                });
+              },
+            },
+          },
+          yAxes: {
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+      } as ChartOptions;
+    },
+  },
+});
+</script>
+```
