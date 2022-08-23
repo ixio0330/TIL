@@ -301,9 +301,9 @@ export default Vue.extend({
   },
   watch: {
     chartValue() {
-      this.chartData.labels.splice(0, 1);
+      this.chartData.labels.shift();
       this.chartData.labels.push(this.getTime());
-      this.chartData.datasets[0].data.splice(0, 1);
+      this.chartData.datasets[0].data.shift();
       this.chartData.datasets[0].data.push(this.chartValue);
     },
   },
