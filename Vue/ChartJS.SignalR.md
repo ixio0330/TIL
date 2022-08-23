@@ -148,11 +148,11 @@ app.Run();
 
 그리고 프로그램을 실행시키면 된다.
 
-## 실시간 데이터 전송
+## 실시간 차트
 
 실시간으로 데이터를 받아서 차트를 그리는 예시이다.
 
-실시간 데이터 전송은 서버에서 어떤 방식으로 데이터를 전송하는지에 따라 달라질 것 같은데, 나는 controller 사용해서 데이터를 전송하도록 했다.
+실시간 데이터 전송은 서버에서 어떤 방식으로 데이터를 전송하는지에 따라 달라질 것 같은데, 나는 서버에서 controller를 사용해서 데이터를 전송하도록 했다.
 
 ### Frontend (Vue)
 
@@ -527,4 +527,291 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+```
+
+## 실시간 차트 (chartjs-plugin-streaming 사용)
+
+앞서 구현한 실시간 차트는 차트의 첫번째 데이터를 삭제하고, 데이터를 삽입하는 방식으로 구현했었다.
+
+검색해보니 chartjs-plugin-streaming를 사용하면 real-time 차트를 구현할 수 있다는 것을 알게되어서 다시 실시간 차트를 구현해봤다.
+
+서버에서 0.1초마다 데이터를 전송해주는 것은 그대로이기 때문에 frontend만 수정하면 된다.
+
+### Frontend (Vue)
+
+먼저 chartjs-plugin-streaming 플러그인을 설치한다.
+
+```
+$ npm i chartjs-plugin-streaming
+```
+
+그리고 플러그인을 사용할 수 있도록 ChartJS.register 함수에 파라미터로 넘겨준다.
+
+```
+import ChartStreaming from "chartjs-plugin-streaming";
+ChartJS.register(
+  ChartStreaming
+);
+```
+
+그러면 이제 차트 옵션에서 x의 type을 realtime으로 설정할 수 있게된다. 
+
+```
+scales: {
+  x: {
+    type: "realtime",
+  },
+},
+```
+
+그런데 x의 type을 realtime으로 설정하니 아래 오류가 발생했다.
+
+```
+You may have an infinite update loop in watcher with expression "chartOptions"
+```
+
+번역을 해보니 chartOptions가 watcher에 있으면 안된다는 의미여서, chartOptions를 methods로 옮기고 옵션 객체를 반환하도록 변경했다.
+
+```
+methods: {
+  chartOptions() {
+    return {
+      plugins: {
+        streaming: {
+          duration: 60 * 100 * 3,
+        },
+      },
+      scales: {
+        x: {
+          type: "realtime",
+          realtime: {
+            refresh: 50,
+            onRefresh(chart) {
+              chart.data.datasets.forEach((dataset) => {
+                dataset.data.push({
+                  x: Date.now(),
+                  y: Math.floor(Math.random() * 100) + 1, // 임시로 넣은 랜덤 데이터
+                });
+              });
+            },
+          },
+        },
+        y: {
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+    } as ChartOptions;
+  },
+},
+```
+
+이렇게 하니 위에 발생했던 오류는 사라지고 다른 오류가 발생했다.
+
+```
+This method is not implemented: Check that a complete date adapter is provided.
+```
+
+검색해보니 chartJs에서 실시간 차트를 그릴 때 moment.js 라이브러리를 사용해서 이 라이브러리가 필요한 듯 싶었다.
+
+아래 명령어로 라이브러리를 다운받았다.
+
+```
+$ npm install moment chartjs-adapter-moment
+```
+
+그리고 차트 컴포넌트 최상단에서 import를 해주니 오류 발생 없이 차트가 정상적으로 그려졌다.
+
+```
+import "chartjs-adapter-moment";
+```
+
+이제 남은건 props로 넘어오는 데이터를 받아오고, 이를 차트에 뿌려주는 것이였다.
+
+이 부분은 refresh 옵션과 method에서 this.$props에 접근하는 방식으로 구현했다.
+
+```
+methods: {
+  chartOptions() {
+    const chartValue = this.$props.chartValue;
+    return {
+      plugins: {
+        streaming: {
+          duration: 60 * 100 * 3,
+        },
+      },
+      scales: {
+        x: {
+          type: "realtime",
+          realtime: {
+            refresh: 50,
+            onRefresh(chart) {
+              chart.data.datasets.forEach((dataset) => {
+                dataset.data.push({
+                  x: Date.now(),
+                  y: chartValue,
+                });
+              });
+            },
+          },
+        },
+        y: {
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+    } as ChartOptions;
+  },
+},
+```
+
+차트를 0.05초마다 다시 그려주도록 설정했고, 이 결과 차트가 잘 그려졌다.
+
+LineChart.vue
+
+```
+<template>
+  <LineChartGenerator
+    :chart-options="chartOptions()"
+    :chart-data="chartData"
+    :chart-id="chartId"
+    :dataset-id-key="datasetIdKey"
+    :plugins="plugins"
+    :css-classes="cssClasses"
+    :styles="styles"
+    :width="width"
+    :height="height"
+  />
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import { Line as LineChartGenerator } from "vue-chartjs/legacy";
+
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  ChartOptions,
+} from "chart.js";
+
+import ChartStreaming from "chartjs-plugin-streaming";
+
+import "chartjs-adapter-moment";
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  ChartStreaming
+);
+
+export default Vue.extend({
+  components: {
+    LineChartGenerator,
+  },
+  name: "LineChart",
+  props: {
+    chartId: {
+      type: String,
+      default: "line-chart",
+    },
+    datasetIdKey: {
+      type: String,
+      default: "label",
+    },
+    width: {
+      type: Number,
+      default: 400,
+    },
+    height: {
+      type: Number,
+      default: 400,
+    },
+    cssClasses: {
+      default: "",
+      type: String,
+    },
+    styles: {
+      type: Object,
+      default: () => ({}),
+    },
+    plugins: {
+      type: Array,
+      default: () => [],
+    },
+    chartValue: {
+      type: Number,
+      default: 0,
+    },
+  },
+  data() {
+    return {
+      chartData: {
+        datasets: [
+          {
+            label: "SiganlR real-time data",
+            backgroundColor: "seagreen",
+            borderColor: "seagreen",
+            lineTension: 0.3,
+          },
+        ],
+      },
+    };
+  },
+  methods: {
+    chartOptions() {
+      const chartValue = this.$props.chartValue;
+      return {
+        plugins: {
+          streaming: {
+            duration: 60 * 100 * 3,
+          },
+        },
+        scales: {
+          x: {
+            type: "realtime",
+            realtime: {
+              refresh: 50,
+              onRefresh(chart) {
+                chart.data.datasets.forEach((dataset) => {
+                  dataset.data.push({
+                    x: Date.now(),
+                    y: chartValue,
+                  });
+                });
+              },
+            },
+          },
+          y: {
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+      } as ChartOptions;
+    },
+  },
+});
+</script>
 ```
