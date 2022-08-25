@@ -32,6 +32,7 @@ export default Vue.extend({
       intervalKey: 0,
       xAxis: null as any,
       yAxis: null as any,
+      allSeries: [] as any[],
     };
   },
   mounted() {
@@ -49,11 +50,11 @@ export default Vue.extend({
     // X축 option
     this.xAxis = chart.xAxes.push(
       am5xy.DateAxis.new(root, {
-        maxDeviation: 0.5,
+        maxDeviation: 0.3,
         extraMin: -0.1,
         extraMax: 0.1,
         groupData: false,
-        baseInterval: { timeUnit: "second", count: 1 },
+        baseInterval: { timeUnit: "millisecond", count: 100 },
         renderer: am5xy.AxisRendererX.new(root, {
           minGridDistance: 50,
         }),
@@ -68,189 +69,24 @@ export default Vue.extend({
       })
     );
 
-    // 시리즈
-    this.series = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 1",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series2 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 2",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series3 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 3",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series4 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 4",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series5 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 5",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series6 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 6",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series7 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 7",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series8 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 8",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series9 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 9",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series10 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 10",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series11 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 11",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series12 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 12",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
-    this.series13 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        name: "Series 13",
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-          pointerOrientation: "horizontal",
-          labelText: "{valueY}",
-        }),
-      })
-    );
+    for (let i = 1; i <= 20; i++) {
+      const series = chart.series.push(
+        am5xy.LineSeries.new(root, {
+          minBulletDistance: 10,
+          name: `Series ${i}`,
+          xAxis: this.xAxis,
+          yAxis: this.yAxis,
+          valueYField: "value",
+          valueXField: "date",
+          legendValueText: "{valueY}",
+          tooltip: am5.Tooltip.new(root, {
+            pointerOrientation: "horizontal",
+            labelText: "{valueY}",
+          }),
+        })
+      );
+      this.allSeries.push(series);
+    }
 
     function generateChartData() {
       var chartData = [];
@@ -263,56 +99,57 @@ export default Vue.extend({
 
         chartData.push({
           date: newDate.getTime(),
-          value: Math.floor(Math.random() * 100) + 1,
+          value: 0,
         });
       }
       return chartData;
     }
 
-    let data = generateChartData();
-    let data2 = generateChartData();
-    let data3 = generateChartData();
-    let data4 = generateChartData();
-    let data5 = generateChartData();
-    let data6 = generateChartData();
-    let data7 = generateChartData();
-    let data8 = generateChartData();
-    let data9 = generateChartData();
-    let data10 = generateChartData();
-    let data11 = generateChartData();
-    let data12 = generateChartData();
-    let data13 = generateChartData();
+    this.allSeries.forEach((series: any) => {
+      series.data.setAll(generateChartData());
+    });
 
-    this.series.data.setAll(data);
-    this.series2.data.setAll(data2);
-    this.series3.data.setAll(data3);
-    this.series4.data.setAll(data4);
-    this.series5.data.setAll(data5);
-    this.series6.data.setAll(data6);
-    this.series7.data.setAll(data7);
-    this.series8.data.setAll(data8);
-    this.series9.data.setAll(data9);
-    this.series10.data.setAll(data10);
-    this.series11.data.setAll(data11);
-    this.series12.data.setAll(data12);
-    this.series13.data.setAll(data13);
+    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+    cursor.lineY.set("visible", false);
 
-    this.series.bullets.push(function () {
-      return am5.Bullet.new(root, {
-        locationX: undefined,
-        sprite: am5.Circle.new(root, {
-          radius: 0,
-        }),
+    var legend = chart.rightAxesContainer.children.push(
+      am5.Legend.new(root, {
+        width: 150,
+        paddingLeft: 15,
+        height: am5.percent(100),
+      })
+    );
+
+    legend.itemContainers.template.events.on("pointerover", function (e) {
+      var itemContainer = e.target;
+
+      var series = itemContainer?.dataItem?.dataContext;
+
+      chart.series.each(function (chartSeries) {
+        if (chartSeries != series) {
+          chartSeries.strokes.template.setAll({
+            strokeOpacity: 0.15,
+            stroke: am5.color(0x000000),
+          });
+        } else {
+          chartSeries.strokes.template.setAll({
+            strokeWidth: 3,
+          });
+        }
       });
     });
 
-    let cursor = chart.set(
-      "cursor",
-      am5xy.XYCursor.new(root, {
-        xAxis: this.xAxis,
-      })
-    );
-    cursor.lineY.set("visible", false);
+    legend.itemContainers.template.events.on("pointerout", function (e) {
+      chart.series.each(function (chartSeries) {
+        chartSeries.strokes.template.setAll({
+          strokeOpacity: 1,
+          strokeWidth: 1,
+          stroke: chartSeries.get("fill"),
+        });
+      });
+    });
+
+    legend.data.setAll(chart.series.values);
 
     chart.appear(1000, 0);
 
@@ -337,19 +174,9 @@ export default Vue.extend({
     },
     interval() {
       const intervalKey = setInterval(() => {
-        this.addData(this.series);
-        this.addData(this.series2);
-        this.addData(this.series3);
-        this.addData(this.series4);
-        this.addData(this.series5);
-        this.addData(this.series6);
-        this.addData(this.series7);
-        this.addData(this.series8);
-        this.addData(this.series9);
-        this.addData(this.series10);
-        this.addData(this.series11);
-        this.addData(this.series12);
-        this.addData(this.series13);
+        this.allSeries.forEach((series: any) => {
+          this.addData(series);
+        });
       }, 100);
       this.intervalKey = intervalKey;
     },
