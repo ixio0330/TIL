@@ -69,11 +69,11 @@ export default Vue.extend({
       })
     );
 
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 6; i++) {
       const series = chart.series.push(
         am5xy.LineSeries.new(root, {
-          minBulletDistance: 10,
-          name: `Series ${i}`,
+          minBulletDistance: 100,
+          name: `SENSOR${i}`,
           xAxis: this.xAxis,
           yAxis: this.yAxis,
           valueYField: "value",
@@ -89,13 +89,13 @@ export default Vue.extend({
     }
 
     function generateChartData() {
-      var chartData = [];
-      var firstDate = new Date();
+      const chartData = [];
+      const firstDate = new Date();
       firstDate.setDate(firstDate.getDate() - 1000);
 
-      for (var i = 0; i < 50; i++) {
-        var newDate = new Date(firstDate);
-        newDate.setSeconds(newDate.getSeconds() + i);
+      for (let i = 0; i < 50; i++) {
+        let newDate = new Date(firstDate);
+        newDate.setMilliseconds(newDate.getMilliseconds() + i * 100);
 
         chartData.push({
           date: newDate.getTime(),
@@ -105,7 +105,8 @@ export default Vue.extend({
       return chartData;
     }
 
-    this.allSeries.forEach((series: any) => {
+    this.allSeries.forEach((series: any, index: number) => {
+      // console.log(`시리즈${index + 1}: ${new Date().toISOString()}`);
       series.data.setAll(generateChartData());
     });
 
@@ -165,7 +166,7 @@ export default Vue.extend({
       var lastDataItem = series.dataItems[series.dataItems.length - 1];
       var newValue = Math.floor(Math.random() * 100) + 1;
       var lastDate = new Date(lastDataItem.get("valueX"));
-      var time = am5.time.add(new Date(lastDate), "second", 1).getTime();
+      var time = am5.time.add(new Date(lastDate), "millisecond", 100).getTime();
       series.data.removeIndex(0);
       series.data.push({
         date: time,
