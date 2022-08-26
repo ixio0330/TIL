@@ -27,3 +27,7 @@ word.json 파일에는 단어와 빈도수가 있고, 단어에 맞게 빈도수
 이렇게 하면 서버에 요청을 줄일 수 있다는 장점이 있다.
 
 최상단에 SearchComponent 컴포넌트에서 useState를 선언해서 SearchInput 컴포넌트에는 setState 함수를, SearchList 컴포넌트에는 state 값을 전달해서 각자의 역할을 하도록 했다.
+
+SearchInput 컴포넌트를 보면 onChangeWithDebounce, onChangeWithoutDebounce 두개의 함수가 있는데 debounce를 사용한 것과 사용하지 않은 결과를 확인하기 위해 findMatchWords 함수가 호출될 때마다 count 로그를 찍도록 해봤다.
+
+확실히 debounce를 사용하니 함수 호출량이 현저히 낮다.
