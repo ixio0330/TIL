@@ -1,0 +1,286 @@
+[
+  {
+    "word": "국민은행",
+    "frequency": 100
+  },
+  {
+    "word": "국민은행 영업시간",
+    "frequency": 97
+  },
+  {
+    "word": "구글",
+    "frequency": 90
+  },
+  {
+    "word": "구글번역",
+    "frequency": 87
+  },
+  {
+    "word": "구글 이미지검색",
+    "frequency": 82
+  },
+  {
+    "word": "구글 드라이브",
+    "frequency": 11
+  },
+  {
+    "word": "네이버",
+    "frequency": 101
+  },
+  {
+    "word": "네이버 웹툰",
+    "frequency": 99
+  },
+  {
+    "word": "네이버 지도",
+    "frequency": 94
+  },
+  {
+    "word": "네이버 부동산",
+    "frequency": 29
+  },
+  {
+    "word": "넥슨",
+    "frequency": 98
+  },
+  {
+    "word": "넥슨 채용",
+    "frequency": 91
+  },
+  {
+    "word": "넥슨 테일즈위버",
+    "frequency": 87
+  },
+  {
+    "word": "넥슨 서든어택",
+    "frequency": 58
+  },
+  {
+    "word": "다음",
+    "frequency": 105
+  },
+  {
+    "word": "다음 메일",
+    "frequency": 74
+  },
+  {
+    "word": "다음 지도",
+    "frequency": 59
+  },
+  {
+    "word": "로블록스",
+    "frequency": 205
+  },
+  {
+    "word": "로블록스 다운로드",
+    "frequency": 195
+  },
+  {
+    "word": "로블록스 바로가기",
+    "frequency": 201
+  },
+  {
+    "word": "로스트아크",
+    "frequency": 74
+  },
+  {
+    "word": "로스트아크 인벤",
+    "frequency": 42
+  },
+  {
+    "word": "로스트아크 갤러리",
+    "frequency": 66
+  },
+  {
+    "word": "메이플스토리",
+    "frequency": 307
+  },
+  {
+    "word": "메이플스토리 인내의숲",
+    "frequency": 297
+  },
+  {
+    "word": "메이플스토리 인벤",
+    "frequency": 102
+  },
+  {
+    "word": "마켓컬리",
+    "frequency": 99
+  },
+  {
+    "word": "마켓컬리 알바",
+    "frequency": 20
+  },
+  {
+    "word": "마켓컬리 채용",
+    "frequency": 52
+  },
+  {
+    "word": "무신사",
+    "frequency": 109
+  },
+  {
+    "word": "무신사 쿠폰",
+    "frequency": 85
+  },
+  {
+    "word": "무신사 아울렛",
+    "frequency": 26
+  },
+  {
+    "word": "발로란트",
+    "frequency": 91
+  },
+  {
+    "word": "발로란트 vp",
+    "frequency": 28
+  },
+  {
+    "word": "발로란트 전적",
+    "frequency": 61
+  },
+  {
+    "word": "번역기",
+    "frequency": 512
+  },
+  {
+    "word": "번역기 추천",
+    "frequency": 89
+  },
+  {
+    "word": "번역기 영어",
+    "frequency": 201
+  },
+  {
+    "word": "삼성전자",
+    "frequency": 101
+  },
+  {
+    "word": "삼성전자 서비스센터",
+    "frequency": 49
+  },
+  {
+    "word": "삼성전자 주가",
+    "frequency": 81
+  },
+  {
+    "word": "사람인",
+    "frequency": 258
+  },
+  {
+    "word": "사람인 맞춤법",
+    "frequency": 5
+  },
+  {
+    "word": "사람인 이력서",
+    "frequency": 20
+  },
+  {
+    "word": "인스타그램",
+    "frequency": 620
+  },
+  {
+    "word": "인스타그램 로고",
+    "frequency": 509
+  },
+  {
+    "word": "인스타그램 pc",
+    "frequency": 201
+  },
+  {
+    "word": "유튜브",
+    "frequency": 1002
+  },
+  {
+    "word": "유튜브 다운로드",
+    "frequency": 602
+  },
+  {
+    "word": "유튜브 뮤직",
+    "frequency": 898
+  },
+  {
+    "word": "정부24",
+    "frequency": 115
+  },
+  {
+    "word": "지마켓",
+    "frequency": 85
+  },
+  {
+    "word": "지마켓 판매자센터",
+    "frequency": 55
+  },
+  {
+    "word": "쿠팡",
+    "frequency": 351
+  },
+  {
+    "word": "쿠팡 플레이",
+    "frequency": 269
+  },
+  {
+    "word": "쿠팡 이츠",
+    "frequency": 341
+  },
+  {
+    "word": "카카오톡",
+    "frequency": 201
+  },
+  {
+    "word": "카카오톡 이모티콘",
+    "frequency": 20
+  },
+  {
+    "word": "카카오톡 pc",
+    "frequency": 192
+  },
+  {
+    "word": "트위터",
+    "frequency": 901
+  },
+  {
+    "word": "트위터 검색",
+    "frequency": 206
+  },
+  {
+    "word": "트위터 영상다운",
+    "frequency": 871
+  },
+  {
+    "word": "티빙",
+    "frequency": 483
+  },
+  {
+    "word": "티빙 가격",
+    "frequency": 201
+  },
+  {
+    "word": "티빙 무료",
+    "frequency": 333
+  },
+  {
+    "word": "파파고",
+    "frequency": 2593
+  },
+  {
+    "word": "파파고 네이버",
+    "frequency": 2100
+  },
+  {
+    "word": "파파고 이미지 번역",
+    "frequency": 1930
+  },
+  {
+    "word": "페이스북",
+    "frequency": 1958
+  },
+  {
+    "word": "페이스북 메신저",
+    "frequency": 208
+  },
+  {
+    "word": "페이스북 광고",
+    "frequency": 1720
+  }
+]
