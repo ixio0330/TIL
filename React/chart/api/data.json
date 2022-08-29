@@ -1,0 +1,47 @@
+{
+  "category": {
+    "ko": ["도전", "안정", "성과", "소통"],
+    "en": ["challenge", "stability", "performance", "communication"]
+  },
+  "list": [
+    {
+      "name": "Company1",
+      "viewName": {
+        "ko": "회사1",
+        "en": "Company1"
+      },
+      "propensity": {
+        "challenge": 90,
+        "stability": 10,
+        "performance": 30,
+        "communication": 80
+      }
+    },
+    {
+      "name": "Company2",
+      "viewName": {
+        "ko": "회사2",
+        "en": "Company2"
+      },
+      "propensity": {
+        "challenge": 50,
+        "stability": 50,
+        "performance": 70,
+        "communication": 60
+      }
+    },
+    {
+      "name": "Company3",
+      "viewName": {
+        "ko": "회사3",
+        "en": "Company3"
+      },
+      "propensity": {
+        "challenge": 20,
+        "stability": 80,
+        "performance": 90,
+        "communication": 30
+      }
+    }
+  ]
+}
