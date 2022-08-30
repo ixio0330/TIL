@@ -164,3 +164,28 @@ export async function getRestaurantData(pageIndex = 1) {
   });
 }
 ```
+
+### 문제
+
+fetch 이후 받은 응답 결과를 바로 json으로 파싱하니, 결과 값이 text일 경우에는 에러가 발생했다.
+
+```
+const data = await response.json();
+```
+
+위의 코드의 문제를 해결하기 위해 먼저 text로 파싱을 하고나서, try catch 문으로 한번 더 json으로 파싱해보고 에러가 없다면 이 결과값을 반환하도록 수정했다.
+
+```
+let data = await response.text();
+
+try {
+  const jsonData = JSON.parse(data);
+  data = jsonData;
+} catch (error) {}
+```
+
+### 느낀점
+
+역시 확장성을 고려한 모듈을 만든다는 건 쉽지 않다. 
+
+단순하게 '이렇게만 하면 되겠지'라는 생각을 넘어서 다양한 상황을 고려할 수 있는 넓은 시야를 갖도록 더 노력해야겠다.
