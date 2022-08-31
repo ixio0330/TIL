@@ -87,4 +87,4 @@ import { useRef } from "react";export default function ContextContent2() {
 
 #### 참고자료
 
-(Context)[https://ko.reactjs.org/docs/context.html]
+[Context](https://ko.reactjs.org/docs/context.html)
