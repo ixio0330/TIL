@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HomeView from './code/views/HomeView';
-import PostView from './code/views/PostView';
-import PostCreateView from './code/views/PostCreateView';
-import PostDetailView from './code/views/PostDetailView';
-import NotFoundView from './code/views/NotFound';
+import HomeView from './views/HomeView';
+import PostView from './views/PostView';
+import PostCreateView from './views/PostCreateView';
+import PostDetailView from './views/PostDetailView';
+import NotFoundView from './views/NotFound';
 
 function App() {
   return (
