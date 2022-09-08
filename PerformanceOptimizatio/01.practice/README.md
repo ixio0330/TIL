@@ -33,10 +33,12 @@
 
 노드 모듈 다운로드가 완료되면, 아래 명령어로 react app과 server를 실행시킨다. (따로 입력해야함)
 
+```
 > React app 실행
->> $ npm start 
+$ npm start 
 > Server 실행
->> $ npm run server 
+$ npm run server
+```
 
 ## 문제 찾기 (1)
 
@@ -193,7 +195,7 @@ OPPORTUNITIES 항목들 중 맨 첫번째인 Reduce unused JavaScript를 최적�
 
 웹 페이지를 로드할 때 모든 소스파일을 가져오지 않고 필요한 파일만 가져오고, 이후 사용자가 필요로하는 파일을 요청하면 그때 가져오도록 하는 방식이다.
 
-Code splitting을 적용하는 대표적인 방법은 각 페이지에 code splitting을 적용하는 것이다. 
+Code splitting을 적용하는 대표적인 곳은 라우터(각 페이지)이다.
 
 사용자는 처음부터 모든 페이지의 소스파일이 필요 없으며, 페이지 이동 시 해당 페이지에 해당하는 js 파일을 요청하도록 하게 하면 된다.
 
