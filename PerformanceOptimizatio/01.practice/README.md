@@ -22,8 +22,6 @@
 - Lighthouse 패널을 이용한 분석
   - OPPORTUNITIES : 로딩 성능에 대한 설명
   - DIAGNOSTICS: 렌더링 성능에 대한 설명
-- Network 패널을 이용한 분석
-- webpack-bundle-analyzer를 이용한 분석
 
 ## 성능 최적화 실습 시작!
 
