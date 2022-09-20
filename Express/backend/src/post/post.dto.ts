@@ -1,8 +1,7 @@
 export interface PostEntity extends CreatePostDto {
   id: string;
-  user_id: string;
-  title: string;
-  content: string;
+  created_on: string;
+  updated_on: string;
 }
 
 export interface CreatePostDto {
@@ -13,11 +12,7 @@ export interface CreatePostDto {
 
 export interface UpdatePostDto {
   id: string;
-  title: string;
-  content: string;
-}
-
-export interface PostDto {
+  user_id: string;
   title: string;
   content: string;
 }

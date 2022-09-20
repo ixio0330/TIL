@@ -24,7 +24,7 @@ class Logger {
   }
 
   info(message: string, data?: any) {
-    console.log(chalk.blue(`[Info] ${message}`));
+    console.log(chalk.blue(`[Info] ${message} | ${new Date().toLocaleString()}`));
     this.#insertLog('info', message, data);
   }
 
