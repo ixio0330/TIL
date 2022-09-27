@@ -2,6 +2,8 @@
 
 [따라하며 배우는 TDD 개발](https://www.inflearn.com/course/%EB%94%B0%EB%9D%BC%ED%95%98%EB%A9%B0-%EB%B0%B0%EC%9A%B0%EB%8A%94-tdd/dashboard)강의를 보고 정리한 내용입니다.
 
+강의에서는 mongoDB를 사용하지만, 개인적으로 postgresql을 사용해서 진행했습니다.
+
 ## 단위(Unit) 테스트
 
 개발자가 수행하고 자신이 개발 한 코드 단위 (일명 모듈, 구성 요소)를 테스트한다.
