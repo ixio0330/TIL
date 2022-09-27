@@ -1,0 +1,10 @@
+# POST http://localhost:5000/api/products
+# Content-Type: application/json
+
+# {
+#   "name": "earphones",
+#   "description": "It is good",
+#   "price": 0
+# }
+
+# GET http://localhost:5000/api/products/dee384b0-3e03-11ed-87ff-cf4d362b3f73
