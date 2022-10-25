@@ -180,5 +180,9 @@ module.exports = config;
 
 이렇게 jest를 설치하고 나서 testing library를 다운받는 과정에서 오류가 발생해서 찾아보다가 공식문서에서 제공해주는 방법을 사용했고 잘 되었다.
 
+[Github 주소](https://github.com/testing-library/vue-testing-library)를 보면 router, vuetify 등과 함께 사용하는 예제들이 나와있다.
+
 ### 참고자료
-https://v1.test-utils.vuejs.org/installation/
+
+[Vue 공식문서](https://v1.test-utils.vuejs.org/installation/)
+[Github 주소](https://github.com/testing-library/vue-testing-library)
