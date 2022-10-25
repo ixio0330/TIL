@@ -13,6 +13,8 @@ $ npm i -D @testing-library/vue@5
 $ npm i -D @testing-library/jest-dom
 ```
 
+test 파일은 root 폴더에 tests 폴더에 작성했다.
+
 ## 테스트 코드 작성하기
 
 먼저, 버튼을 클릭하는 숫자를 나타내는 count가 있고, 클릭하면 count가 증가하는 click 버튼이 있는 컴포넌트를 만들었다. 
